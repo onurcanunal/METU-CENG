@@ -1,2 +1,2 @@
 # METU-CENG
-Homework files for each course.
+Homework files of METU-CENG Courses.
