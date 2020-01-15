@@ -1,5 +1,5 @@
 ;Ali Ilker SIGIRCI - 2171940
-;Onurcan UNAL - 2095966
+;Onur Can UNAL - 2095966
 
 list P=18F8722
 
