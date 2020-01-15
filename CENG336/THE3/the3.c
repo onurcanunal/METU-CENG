@@ -2,7 +2,7 @@
     Group 70
     
     A.Ilker SIGIRCI - 2171940
-    Onurcan UNAL    - 2095966
+    Onur Can UNAL    - 2095966
 */
 
 /*
@@ -103,6 +103,7 @@ void initialization(){ // Call initialization functions
     initRB();
     initADC();    
     GIE = 1;  // Global interrupts are enabled
+    TRISE= 0x02; // b'00000010' -> RE1 input 
 }
 
 void start(){ // Write  #Electro Vote# to LCD and wait for RE1 button press.
