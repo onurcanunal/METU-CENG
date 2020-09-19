@@ -1,0 +1,95 @@
+Group 84
+
+Mert Anıl YILMAZ / 2172211
+Onur Can  ÜNAL   / 2095966
+
+
+
+We have 2 different folders that are named as "discoveryScripts" and "experimentScripts".
+
+For the Link-cost discovery part, the scripts that are included in the folder named "discoveryScripts" are used.
+
+For the Experiment part, the scripts that are included in the folder named "discoveryScripts" are used.
+
+After connecting to the servers, the scripts that are included in the folders are placed.
+
+For the Link-cost discovery part, placements of the files that are included in the "discoveryScripts" folder should be in the following way:
+
+s.py  --> node s
+r1.py --> node r1
+r2.py --> node r2
+r3.py --> node r3
+d.py  --> node d
+
+configureR1.sh and configureR2.sh scripts that are given to us are placed into r1, and r2 respectively, and they both are runned.
+
+To make synchronization of the nodes, the following command should be runned: 
+
+"sudo ntpdate -u pool.ntp.org"
+
+To calculate link costs, since we designed such a way that we mentioned in the report, the order of running the scripts with their
+commands should be in their nodes as:
+1) python3 s.py
+   python3 d.py
+
+2) python3 r2.py
+
+3) python3 r1.py
+   python3 r3.py
+
+Then, link_costs.txt files are created for node r1, r2 and r3 into their locals with respect to their links.
+
+For the experiment part, placement of the files that are included in the "experimentScripts" folder should be in the following way:
+
+s.py, S_0.sh, S_20.sh, S_40.sh, S_50.sh --> node s
+r3.py, R3_0.sh, R3_20.sh, R3_40.sh, R3_50.sh --> node r3
+d.py, D_0.sh, D_20.sh, D_40.sh, D_50.sh  --> node d
+
+For tc/netem commands, we wrote the total of 12 script files like the files that had been given to us.
+
+We prepared the scripts:
+
+For 0 ms network emulation delay, S_0.sh, R3_0.sh and D_0.sh.
+For 20ms network emulation delay, S_20.sh, R3_20.sh and D_20.sh.
+For 40ms network emulation delay, S_40.sh, R3_40.sh and D_40.sh.
+For 50ms network emulation delay, S_50.sh, R3_50.sh and D_50.sh.
+
+For example, we wrote the following commands to add 20 ms +- 5 ms delay to the link d-r3 from node d:
+
+r3=$(getent ahosts "r3" | cut -d " " -f 1 | uniq)
+r3_adapter=$(ip route get $r3 | grep -Po '(?<=(dev )).*(?= src| proto)')
+sudo tc qdisc del dev $r3_adapter root netem
+sudo tc qdisc add dev $r3_adapter root netem delay 20ms 5ms distribution normal
+
+The first two lines for specifying the target links. Actually, these two lines are identical with configurationR1.sh file's. The third line of the example is for deletion of existing delay configuration if it exists. Without it, we could not configure nodes after the first configuration. The last line of the example is for adding delay. "distribution normal" part of the line is for obtaining normal distribution delays. 
+
+If calculating end-to-end delay with 0 network emulation delay is asked, then the scripts that configures 0 network emulation delay
+on the nodes should be runned with, for example:
+
+on node s:
+sh ./S_0.sh
+
+on node r3:
+sh ./R3_0.sh
+
+on node d:
+sh ./D_0.sh
+
+The other network emulation delays work in a similar manner, for example for the 20 ms network emulation delay:
+
+on node s:
+sh ./S_20.sh
+
+on node r3:
+sh ./R3_20.sh
+
+on node d:
+sh ./D_20.sh
+
+After then, the order of running the scripts with their commands should be in their nodes as:
+1) python3 d.py
+2) python3 r3.py
+3) python3 s.py
+
+The values of the number of packets, the average value of end-to-end delay and the standard deviation of the sent packets are
+print out to the terminal.

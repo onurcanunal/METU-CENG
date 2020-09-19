@@ -1,0 +1,136 @@
+Group 84
+
+Mert Anıl YILMAZ / 2172211
+Onur Can  ÜNAL   / 2095966
+
+
+
+
+We have 5 scripts for 5 nodes.
+s.py  --> node s
+r1.py --> node r1
+r2.py --> node r2
+r3.py --> node r3
+d.py  --> node d
+
+If parameter 1 is given to s.py and d.py scripts, they are run to do experiment 1,
+and if parameter 2 is given to s.py and d.py scripts, they are run to do experiment 2.
+
+After connecting to the servers, the scripts that are named accordingly are placed.
+
+input1.txt, input2.txt files should be placed into s node to send.
+
+input1.txt file should also be placed into d node to check file transmission is correct.
+
+Configuration scripts that are in configurationScripts folder written for each node also placed accordingly.
+
+configureS_loss5.sh, configureS_loss15.sh, configureS_loss38.sh --> node s
+configureR1_loss5.sh, configureR1_loss15.sh, configureR1_loss38.sh --> node r1
+configureR2_loss5.sh, configureR2_loss15.sh, configureR2_loss38.sh --> node r2
+configureR3_loss5.sh, configureR3_loss15.sh, configureR3_loss38.sh --> node r3
+configureD_loss5.sh, configureD_loss15.sh, configureD_loss38.sh --> node d
+
+IP Tables:
+			r1 		   r2           r3           d
+s 	   10.10.1.2	10.10.2.1	 10.10.3.2
+r1                                            10.10.4.2
+r2                                            10.10.5.2
+r3                                            10.10.7.1
+
+To make synchronization of the nodes, the following command should be runned: 
+
+"sudo ntpdate -u pool.ntp.org"
+
+For experiment 1, related configuration files for s, r3, and d nodes executed.
+
+Then, following commands are typed in terminal of related nodes in order.
+
+1)python d.py 1
+2)python r3.py
+3)python s.py 1
+
+Start time of file transmission is printed out on node s, end time of file transmission
+is printed out on node d.
+
+output1.txt file is created on node d.
+
+The validity of this file can be confirmed with the command:
+
+"diff output1.txt input1.txt"
+
+
+For experiment 2, related configuration files for s, r1, r2, and d nodes executed.
+
+Then, following commands are typed in terminal of related nodes in order.
+
+1)python d.py 2
+2)python r1.py
+2)python r2.py
+3)python s.py 2
+
+Start time of file transmission is printed out on node s, end time of file transmission
+is printed out on node d.
+
+output2.txt file is created on node d.
+
+The validity of this file can be confirmed with the command:
+
+"diff output2.txt input1.txt"
+
+
+For tc/netem commands, we wrote the total of 15 script files like the files that had been given to us.
+
+We prepared the scripts:
+
+For 5% packet loss, configureS_loss5.sh, configureR1_loss5.sH, configureR2_loss5.sh, configureR3_loss5.sh, configureD_loss5.sh
+For 15% packet loss, configureS_loss15.sh, configureR1_loss15.sH, configureR2_loss15.sh, configureR3_loss15.sh, configureD_loss15.sh
+For 38% packet loss, configureS_loss38.sh, configureR1_loss38.sH, configureR2_loss38.sh, configureR3_loss38.sh, configureD_loss38.sh
+
+For example, we wrote the following commands to add 5% packet loss and 3ms delay to the link d-r3 from node d:
+
+r3=$(getent ahosts "r3" | cut -d " " -f 1 | uniq)
+r3_adapter=$(ip route get $r3 | grep -Po '(?<=(dev )).*(?= src| proto)')
+sudo tc qdisc change dev $r3_adapter root netem loss 5% delay 3ms
+
+The link down can be achieved by the following command:
+
+"ip link set dev <interface> down"
+
+The first two lines for specifying the target links. Actually, these two lines are identical with configurationR1.sh file's. The last line of the example is for adding delay and adding packet loss.
+
+If calculating file transmission time with 5% packet loss is asked for experiment 1, then the scripts that configures 5% packet loss on the nodes should be runned with, for example:
+
+on node s:
+sh ./configureS_loss5.sh
+
+on node r3:
+sh ./configureR3_loss5.sh
+
+on node d:
+sh ./configureD_loss5.sh
+
+After then, the order of running the scripts with their commands should be in their nodes as:
+1) python d.py 1
+2) python r3.py
+3) python s.py 1
+
+
+If calculating file transmission time with 15% packet loss is asked for experiment 2, then the scripts that configures 15% packet loss on the nodes should be runned with, for example:
+
+on node s:
+sh ./configureS_loss15.sh
+
+on node r1:
+sh ./configureR1_loss15.sh
+
+on node r2:
+sh ./configureR2_loss15.sh
+
+on node d:
+sh ./configureD_loss15.sh
+
+After then, the order of running the scripts with their commands should be in their nodes as:
+1) python d.py 2
+2) python r1.py
+3) python r2.py
+4) python s.py 2
