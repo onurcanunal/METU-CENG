@@ -16,7 +16,7 @@ public class Sym implements MathExpression {
     }
 
     public boolean match(MathExpression me) {
-        if((me instanceof Sym) && (this.getValue() == ((Sym) me).getValue())){
+        if((me instanceof Sym) && (this.getValue().equals(((Sym) me).getValue()))){
             return true;
         }
         else{

@@ -3,12 +3,12 @@ package hw1;
 public class PrintMathMLVisitor implements MathVisitor<String> {
 
     public String visit(Op op) {
-        if(op.getOperand() != "/"){
+        if(!op.getOperand().equals("/")){
             String opStr;
-            if(op.getOperand() == "+"){
+            if(op.getOperand().equals("+")){
                 opStr = "+";
             }
-            else if(op.getOperand() == "*"){
+            else if(op.getOperand().equals("*")){
                 opStr = "&times;";
             }
             else{

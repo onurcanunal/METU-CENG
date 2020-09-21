@@ -28,7 +28,7 @@ public class Op implements MathExpression {
     }
 
     public boolean match(MathExpression me) {
-        if((me instanceof Op) && (this.getOperand() == ((Op) me).getOperand())){
+        if((me instanceof Op) && (this.getOperand().equals(((Op) me).getOperand())){
             return (getFirst().match(((Op) me).getFirst()) && getSecond().match(((Op) me).getSecond()));
         }
         else{
